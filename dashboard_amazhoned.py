@@ -513,8 +513,10 @@ elif st.session_state.page_selection == "machine_learning":
     
     # Perform cross-validation
     scores = cross_val_score(log_reg_model, X_train_class_scaled, y_train_class, cv=5, scoring='accuracy')
-    st.write(f"Cross-validation scores: {scores}")
-    st.write(f"Mean cross-validation score: {scores.mean()}")
+    
+    # Display the code output with st.code
+    st.code(f"Cross-validation scores: {scores}")
+    st.code(f"Mean cross-validation score: {scores.mean()}")
     
     st.markdown("""
     ### Cross-Validation Explanation:
