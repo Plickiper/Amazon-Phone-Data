@@ -26,7 +26,7 @@ import re
 # Page configuration
 st.set_page_config(
     page_title="Amazon Phone Data Dashboard", # Replace this with your Project's Title
-    page_icon="assets/icon.png", # You may replace this with a custom icon or emoji related to your project
+    page_icon="assets/logo.png", # You may replace this with a custom icon or emoji related to your project
     layout="wide",
     initial_sidebar_state="expanded")
 
