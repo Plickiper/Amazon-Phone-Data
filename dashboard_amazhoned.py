@@ -659,7 +659,7 @@ elif st.session_state.page_selection == "prediction":
         st.error("Scaler is not available. Please train the models first!")
         st.stop()  # Stop further execution if scaler is not available
 
-    st.subheader("Input Features for Prediction")
+    st.subheader("Enter Product Metrics for Prediction")
 
     # Input form for prediction
     with st.form(key='prediction_form'):
