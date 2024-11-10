@@ -505,27 +505,51 @@ elif st.session_state.page_selection == "machine_learning":
     # Confusion Matrix Visualization
     plot_confusion_matrix(y_test_class, y_pred_class, title="Logistic Regression Confusion Matrix")
 
+
     # Cross-Validation (after model training)
     from sklearn.model_selection import cross_val_score
-
+    
     # Perform cross-validation
     scores = cross_val_score(log_reg_model, X_train_class_scaled, y_train_class, cv=5, scoring='accuracy')
     st.write(f"Cross-validation scores: {scores}")
     st.write(f"Mean cross-validation score: {scores.mean()}")
-
+    
+    st.markdown("""
+    ### Cross-Validation Explanation:
+    Cross-validation helps in evaluating the model's performance by splitting the training data into multiple folds. Each fold is used as a test set while the remaining folds are used for training. 
+    This process provides an estimate of how well the model will generalize to an independent dataset. In this case, `cv=5` indicates that the data is split into 5 folds. 
+    The mean cross-validation score shows the average performance across all folds, which helps us understand the model’s robustness and prevent overfitting. 
+    """)
+    
     # Threshold Adjustment (use a custom threshold for classifying "Amazon Choice")
     threshold = 0.5  # Adjust the threshold to your needs
     amazon_choice_prob = log_reg_model.predict_proba(X_test_class_scaled)
     amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
-
+    
     st.write(f"Custom Threshold: {threshold}")
     st.write(f"Adjusted Amazon Choice Predictions (based on threshold):")
     st.write(amazon_choice_prediction)
-
+    
+    st.markdown("""
+    ### Threshold Adjustment Explanation:
+    The logistic regression model outputs probabilities for each class (e.g., 'Amazon Choice' or not). By default, a threshold of 0.5 is used to decide between the two classes. 
+    However, adjusting the threshold can help optimize model predictions based on business needs. For example, you may want to be more conservative in classifying a product as 'Amazon Choice' to avoid false positives. 
+    In this case, we’ve set the threshold to `0.5`, which balances the trade-off between predicting 'Amazon Choice' and 'Not Amazon Choice'. 
+    This can be adjusted depending on the desired level of confidence or business goals.
+    """)
+    
     # Final evaluation with adjusted threshold
     st.write("Final Evaluation with Adjusted Threshold")
     adjusted_accuracy = accuracy_score(y_test_class, amazon_choice_prediction)
     st.write(f"Accuracy with adjusted threshold: {adjusted_accuracy * 100:.2f}%")
+    
+    st.markdown("""
+    ### Final Evaluation with Adjusted Threshold Explanation:
+    After adjusting the classification threshold, the model’s accuracy is re-evaluated to assess its performance under the new decision boundary. 
+    This helps ensure that the model is not overfitting or underfitting, and it allows for better alignment with the specific requirements for classifying products as 'Amazon Choice'. 
+    In this case, the adjusted accuracy is shown as a percentage, which provides insight into the model’s real-world predictive power after threshold adjustments.
+    """)
+
 
     # Random Forest
     
