@@ -506,64 +506,26 @@ elif st.session_state.page_selection == "machine_learning":
     plot_confusion_matrix(y_test_class, y_pred_class, title="Logistic Regression Confusion Matrix")
 
     # Cross-Validation (after model training)
-    st.subheader("Cross-Validation Results")
-    
+    from sklearn.model_selection import cross_val_score
+
     # Perform cross-validation
     scores = cross_val_score(log_reg_model, X_train_class_scaled, y_train_class, cv=5, scoring='accuracy')
-    
-    # Display the cross-validation scores
     st.write(f"Cross-validation scores: {scores}")
     st.write(f"Mean cross-validation score: {scores.mean()}")
-    
-    st.markdown("""
-    ### Cross-Validation Explanation:
-    Cross-validation is used to evaluate the model's performance by splitting the training data into multiple subsets (or folds). 
-    Each fold is used as a test set while the other folds are used for training, ensuring that the model is evaluated across different subsets of the data.
-    
-    Here, we perform 5-fold cross-validation (`cv=5`) and compute the accuracy for each fold. 
-    The `mean()` of these scores gives us an overall estimate of the model's performance.
-    """)
-    
+
     # Threshold Adjustment (use a custom threshold for classifying "Amazon Choice")
-    st.subheader("Threshold Adjustment and Custom Classification")
-    
-    threshold = 0.5  # You can adjust this threshold based on your needs
-    
-    # Predict probabilities for the test set
+    threshold = 0.5  # Adjust the threshold to your needs
     amazon_choice_prob = log_reg_model.predict_proba(X_test_class_scaled)
-    
-    # Adjust predictions based on the custom threshold
     amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
-    
+
     st.write(f"Custom Threshold: {threshold}")
     st.write(f"Adjusted Amazon Choice Predictions (based on threshold):")
     st.write(amazon_choice_prediction)
-    
-    st.markdown("""
-    ### Threshold Adjustment Explanation:
-    The logistic regression model outputs probabilities for each class. By default, a threshold of 0.5 is used to classify data into two classes. 
-    However, depending on the business context or model performance, this threshold can be adjusted.
-    
-    In this case, we have set a custom threshold of `0.5`, meaning if the probability of a product being 'Amazon Choice' is greater than 50%, 
-    it will be classified as 'Amazon Choice'. This threshold adjustment helps in refining the model’s decision boundary based on business requirements.
-    """)
-    
+
     # Final evaluation with adjusted threshold
-    st.subheader("Final Evaluation with Adjusted Threshold")
-    
-    # Evaluate accuracy with the adjusted predictions
+    st.write("Final Evaluation with Adjusted Threshold")
     adjusted_accuracy = accuracy_score(y_test_class, amazon_choice_prediction)
-    
-    # Display the final accuracy
     st.write(f"Accuracy with adjusted threshold: {adjusted_accuracy * 100:.2f}%")
-    
-    st.markdown("""
-    ### Final Evaluation with Adjusted Threshold:
-    After adjusting the threshold, we evaluate the model's performance on the test set. 
-    This allows us to see how well the model performs under the new classification conditions. The accuracy score tells us how many products were correctly classified as 'Amazon Choice' or not based on the adjusted threshold.
-    
-    In this example, we achieved an accuracy of `78.95%` with the adjusted threshold, indicating a strong performance of the model.
-    """)
 
     # Random Forest
     
