@@ -526,6 +526,8 @@ elif st.session_state.page_selection == "machine_learning":
     """)
     
     # Threshold Adjustment (use a custom threshold for classifying "Amazon Choice")
+    st.subheader("Threshold")
+    
     threshold = 0.5  # Adjust the threshold to your needs
     amazon_choice_prob = log_reg_model.predict_proba(X_test_class_scaled)
     amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
