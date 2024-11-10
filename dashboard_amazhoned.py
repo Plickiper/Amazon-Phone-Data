@@ -545,7 +545,7 @@ elif st.session_state.page_selection == "machine_learning":
     # Final evaluation with adjusted threshold
     st.write("Final Evaluation with Adjusted Threshold")
     adjusted_accuracy = accuracy_score(y_test_class, amazon_choice_prediction)
-    st.write(f"Accuracy with adjusted threshold: {adjusted_accuracy * 100:.2f}%")
+    st.code(f"Accuracy with adjusted threshold: {adjusted_accuracy * 100:.2f}%")
     
     st.markdown("""
     ### Final Evaluation with Adjusted Threshold Explanation:
