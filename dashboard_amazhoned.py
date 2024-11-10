@@ -508,6 +508,8 @@ elif st.session_state.page_selection == "machine_learning":
 
     # Cross-Validation (after model training)
     from sklearn.model_selection import cross_val_score
+
+    st.subheader("Cross Validation")
     
     # Perform cross-validation
     scores = cross_val_score(log_reg_model, X_train_class_scaled, y_train_class, cv=5, scoring='accuracy')
