@@ -505,32 +505,34 @@ elif st.session_state.page_selection == "machine_learning":
     # Confusion Matrix Visualization
     plot_confusion_matrix(y_test_class, y_pred_class, title="Logistic Regression Confusion Matrix")
 
-    # Cross-validation (after model training)
-    st.markdown("### Cross-validation of Model Performance")
+    # Cross-Validation (after model training)
+    st.subheader("Cross-Validation Results")
+    
     # Perform cross-validation
     scores = cross_val_score(log_reg_model, X_train_class_scaled, y_train_class, cv=5, scoring='accuracy')
     
-    # Show the cross-validation scores
+    # Display the cross-validation scores
     st.write(f"Cross-validation scores: {scores}")
-    
-    # Calculate and display the mean cross-validation score
-    mean_score = scores.mean() if not np.isnan(scores).any() else "Not Available"
-    st.write(f"Mean cross-validation score: {mean_score}")
+    st.write(f"Mean cross-validation score: {scores.mean()}")
     
     st.markdown("""
-    #### Cross-Validation Explanation:
-    Cross-validation helps in assessing the model's performance across different subsets of the data. 
-    The `cross_val_score` function computes the accuracy on each of the five (cv=5) folds in the training data.
-    The cross-validation scores show the model's ability to generalize. The mean score provides an average of the model's performance across the splits, helping assess consistency and generalization.
+    ### Cross-Validation Explanation:
+    Cross-validation is used to evaluate the model's performance by splitting the training data into multiple subsets (or folds). 
+    Each fold is used as a test set while the other folds are used for training, ensuring that the model is evaluated across different subsets of the data.
     
-    In this case, the mean score is `NaN` because there may be issues with missing data or feature scaling. We ensure that our model is robust by checking these values before proceeding further.
+    Here, we perform 5-fold cross-validation (`cv=5`) and compute the accuracy for each fold. 
+    The `mean()` of these scores gives us an overall estimate of the model's performance.
     """)
     
     # Threshold Adjustment (use a custom threshold for classifying "Amazon Choice")
-    threshold = 0.5  # Adjust the threshold to your needs
+    st.subheader("Threshold Adjustment and Custom Classification")
+    
+    threshold = 0.5  # You can adjust this threshold based on your needs
+    
+    # Predict probabilities for the test set
     amazon_choice_prob = log_reg_model.predict_proba(X_test_class_scaled)
     
-    # Predict with custom threshold
+    # Adjust predictions based on the custom threshold
     amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
     
     st.write(f"Custom Threshold: {threshold}")
@@ -538,26 +540,29 @@ elif st.session_state.page_selection == "machine_learning":
     st.write(amazon_choice_prediction)
     
     st.markdown("""
-    #### Threshold Adjustment Explanation:
-    The logistic regression model outputs probabilities for class predictions. 
-    By default, a threshold of 0.5 is used to classify data into two categories (class 0 or class 1). 
+    ### Threshold Adjustment Explanation:
+    The logistic regression model outputs probabilities for each class. By default, a threshold of 0.5 is used to classify data into two classes. 
+    However, depending on the business context or model performance, this threshold can be adjusted.
     
-    In some cases, you might want to adjust this threshold to better align with your business goals (e.g., being more conservative about which products are classified as 'Amazon Choice').
-    
-    In this example, the threshold has been set to `0.5`, and we are using the adjusted predictions for further evaluation.
+    In this case, we have set a custom threshold of `0.5`, meaning if the probability of a product being 'Amazon Choice' is greater than 50%, 
+    it will be classified as 'Amazon Choice'. This threshold adjustment helps in refining the model’s decision boundary based on business requirements.
     """)
     
     # Final evaluation with adjusted threshold
+    st.subheader("Final Evaluation with Adjusted Threshold")
+    
+    # Evaluate accuracy with the adjusted predictions
     adjusted_accuracy = accuracy_score(y_test_class, amazon_choice_prediction)
+    
+    # Display the final accuracy
     st.write(f"Accuracy with adjusted threshold: {adjusted_accuracy * 100:.2f}%")
     
     st.markdown("""
-    #### Final Evaluation with Adjusted Threshold:
-    After adjusting the classification threshold, the model's accuracy is re-evaluated to determine its performance at the new threshold level. 
-    This ensures that we are not overfitting the data or classifying products too aggressively (or too leniently) as 'Amazon Choice.'
+    ### Final Evaluation with Adjusted Threshold:
+    After adjusting the threshold, we evaluate the model's performance on the test set. 
+    This allows us to see how well the model performs under the new classification conditions. The accuracy score tells us how many products were correctly classified as 'Amazon Choice' or not based on the adjusted threshold.
     
-    In this case, the accuracy of the adjusted model is `78.95%`. 
-    This gives a better sense of how the model is performing when the decision boundary is shifted.
+    In this example, we achieved an accuracy of `78.95%` with the adjusted threshold, indicating a strong performance of the model.
     """)
 
     # Random Forest
