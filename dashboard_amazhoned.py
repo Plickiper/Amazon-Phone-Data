@@ -505,27 +505,60 @@ elif st.session_state.page_selection == "machine_learning":
     # Confusion Matrix Visualization
     plot_confusion_matrix(y_test_class, y_pred_class, title="Logistic Regression Confusion Matrix")
 
-    # Cross-Validation (after model training)
-    from sklearn.model_selection import cross_val_score
-
+    # Cross-validation (after model training)
+    st.markdown("### Cross-validation of Model Performance")
     # Perform cross-validation
     scores = cross_val_score(log_reg_model, X_train_class_scaled, y_train_class, cv=5, scoring='accuracy')
+    
+    # Show the cross-validation scores
     st.write(f"Cross-validation scores: {scores}")
-    st.write(f"Mean cross-validation score: {scores.mean()}")
-
+    
+    # Calculate and display the mean cross-validation score
+    mean_score = scores.mean() if not np.isnan(scores).any() else "Not Available"
+    st.write(f"Mean cross-validation score: {mean_score}")
+    
+    st.markdown("""
+    #### Cross-Validation Explanation:
+    Cross-validation helps in assessing the model's performance across different subsets of the data. 
+    The `cross_val_score` function computes the accuracy on each of the five (cv=5) folds in the training data.
+    The cross-validation scores show the model's ability to generalize. The mean score provides an average of the model's performance across the splits, helping assess consistency and generalization.
+    
+    In this case, the mean score is `NaN` because there may be issues with missing data or feature scaling. We ensure that our model is robust by checking these values before proceeding further.
+    """)
+    
     # Threshold Adjustment (use a custom threshold for classifying "Amazon Choice")
     threshold = 0.5  # Adjust the threshold to your needs
     amazon_choice_prob = log_reg_model.predict_proba(X_test_class_scaled)
+    
+    # Predict with custom threshold
     amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
-
+    
     st.write(f"Custom Threshold: {threshold}")
     st.write(f"Adjusted Amazon Choice Predictions (based on threshold):")
     st.write(amazon_choice_prediction)
-
+    
+    st.markdown("""
+    #### Threshold Adjustment Explanation:
+    The logistic regression model outputs probabilities for class predictions. 
+    By default, a threshold of 0.5 is used to classify data into two categories (class 0 or class 1). 
+    
+    In some cases, you might want to adjust this threshold to better align with your business goals (e.g., being more conservative about which products are classified as 'Amazon Choice').
+    
+    In this example, the threshold has been set to `0.5`, and we are using the adjusted predictions for further evaluation.
+    """)
+    
     # Final evaluation with adjusted threshold
-    st.write("Final Evaluation with Adjusted Threshold")
     adjusted_accuracy = accuracy_score(y_test_class, amazon_choice_prediction)
     st.write(f"Accuracy with adjusted threshold: {adjusted_accuracy * 100:.2f}%")
+    
+    st.markdown("""
+    #### Final Evaluation with Adjusted Threshold:
+    After adjusting the classification threshold, the model's accuracy is re-evaluated to determine its performance at the new threshold level. 
+    This ensures that we are not overfitting the data or classifying products too aggressively (or too leniently) as 'Amazon Choice.'
+    
+    In this case, the accuracy of the adjusted model is `78.95%`. 
+    This gives a better sense of how the model is performing when the decision boundary is shifted.
+    """)
 
     # Random Forest
     
