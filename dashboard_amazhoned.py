@@ -682,13 +682,14 @@ elif st.session_state.page_selection == "prediction":
     # Check if models exist in session state
     if 'log_reg_model' not in st.session_state or 'rfr_model' not in st.session_state:
         st.error("Please train the models in the Machine Learning section first!")
-        st.stop()
+        st.stop()  # Stop further execution if models are not found
 
+    # Check if scaler exists in session state
     if 'scaler' not in st.session_state:
         st.error("Scaler is not available. Please train the models first!")
-        st.stop()
+        st.stop()  # Stop further execution if scaler is not available
 
-    st.subheader("Enter Product Metrics for Prediction")
+    st.subheader("Input Features for Prediction")
 
     # Input form for prediction
     with st.form(key='prediction_form'):
@@ -706,31 +707,39 @@ elif st.session_state.page_selection == "prediction":
                 'product_num_ratings': [product_num_ratings]
             })
 
-            # Normalize the input data
+            # Normalize the input data using the scaler from session state
             scaler = st.session_state['scaler']
             input_normalized = scaler.transform(input_data)
 
-            # Make predictions
+            # Make predictions using the Logistic Regression model
             amazon_choice_prob = st.session_state['log_reg_model'].predict_proba(input_normalized)
+
+            # Set a custom threshold (e.g., 0.4) for predicting "Amazon Choice"
             threshold = 0.4
             amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
+
+            # Predict sales volume using Random Forest Regressor
             sales_volume_prediction = st.session_state['rfr_model'].predict(input_normalized)
 
-            # Format probabilities
-            prob_no = amazon_choice_prob[0][0] * 100
-            prob_yes = amazon_choice_prob[0][1] * 100
+            # Format and display the prediction probabilities
+            prob_no = amazon_choice_prob[0][0] * 100  # Probability for class 0 (No)
+            prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
 
-            # Display primary results in a single row using columns
+            # Display primary results in a single row
             st.markdown("### Prediction Results")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown("**Amazon Choice Prediction**")
-                st.write("Yes" if amazon_choice_prediction[0] == 1 else "No")
-            with col2:
-                st.markdown("**Predicted Sales Volume**")
-                st.write(f"{int(sales_volume_prediction[0]):,}")
+            results_col1, results_col2 = st.columns(2)
+            with results_col1:
+                st.metric(
+                    label="Amazon Choice Prediction",
+                    value="Yes" if amazon_choice_prediction[0] == 1 else "No"
+                )
+            with results_col2:
+                st.metric(
+                    label="Predicted Sales Volume",
+                    value=f"{int(sales_volume_prediction[0]):,}"
+                )
 
-            # Display the prediction probabilities
+            # Display the prediction probabilities with formatting
             st.markdown("#### Prediction Probabilities")
             st.write(f"Prediction probabilities: {amazon_choice_prob}")
             st.markdown(f"**Probability of being 'Amazon Choice'**: {prob_yes:.2f}%")
@@ -738,8 +747,7 @@ elif st.session_state.page_selection == "prediction":
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
-            st.error("Please make sure all input values are valid.")  
-
+            st.error("Please make sure all input values are valid.")
 
 
 
