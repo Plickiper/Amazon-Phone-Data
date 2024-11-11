@@ -724,25 +724,21 @@ elif st.session_state.page_selection == "prediction":
             # Format and display the prediction probabilities
             prob_no = amazon_choice_prob[0][0] * 100  # Probability for class 0 (No)
             prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
-            
-            st.markdown("### Prediction Probabilities")
-            st.write(f"**Probability of being 'Amazon Choice':** {prob_yes:.2f}%")
-            st.write(f"**Probability of NOT being 'Amazon Choice':** {prob_no:.2f}%")
 
-            # Display predictions in a pleasing format under the "Predict" button
-            st.markdown("### Prediction Results")
-            st.write("Based on the entered product metrics, here are the prediction outcomes:")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric(
-                    label="Amazon Choice Prediction",
-                    value="Yes" if amazon_choice_prediction[0] == 1 else "No"
-                )
-            with col2:
-                st.metric(
-                    label="Predicted Sales Volume",
-                    value=f"{int(sales_volume_prediction[0]):,}"
-                )
+            # Display the predictions in a container for visual organization
+            with st.container():
+                st.markdown("### Prediction Results")
+                st.write(f"Prediction probabilities: {amazon_choice_prob}")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Amazon Choice Prediction", "Yes" if amazon_choice_prediction[0] == 1 else "No")
+                with col2:
+                    st.metric("Predicted Sales Volume", f"{int(sales_volume_prediction[0]):,}")
+                with col3:
+                    st.markdown("**Probabilities**")
+                    st.write(f"Amazon Choice: {prob_yes:.2f}%")
+                    st.write(f"Not Amazon Choice: {prob_no:.2f}%")
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
