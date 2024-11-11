@@ -725,11 +725,13 @@ elif st.session_state.page_selection == "prediction":
             prob_no = amazon_choice_prob[0][0] * 100  # Probability for class 0 (No)
             prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
             
-            st.write(f"Prediction probabilities: {amazon_choice_prob}")
-            st.write(f"Probability of being 'Amazon Choice': {prob_yes:.2f}%")
-            st.write(f"Probability of NOT being 'Amazon Choice': {prob_no:.2f}%")
+            st.markdown("### Prediction Probabilities")
+            st.write(f"**Probability of being 'Amazon Choice':** {prob_yes:.2f}%")
+            st.write(f"**Probability of NOT being 'Amazon Choice':** {prob_no:.2f}%")
 
-            # Display predictions
+            # Display predictions in a pleasing format under the "Predict" button
+            st.markdown("### Prediction Results")
+            st.write("Based on the entered product metrics, here are the prediction outcomes:")
             col1, col2 = st.columns(2)
             with col1:
                 st.metric(
@@ -745,6 +747,7 @@ elif st.session_state.page_selection == "prediction":
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
             st.error("Please make sure all input values are valid.")
+
 
 
 
