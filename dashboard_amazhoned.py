@@ -725,24 +725,27 @@ elif st.session_state.page_selection == "prediction":
             prob_no = amazon_choice_prob[0][0] * 100  # Probability for class 0 (No)
             prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
 
-            # Display primary results in a single row
-            st.markdown("### Prediction Results")
-            results_col1, results_col2 = st.columns(2)
-            with results_col1:
-                st.metric(
-                    label="*Amazon Choice Prediction*",
-                    value="Yes" if amazon_choice_prediction[0] == 1 else "No"
-                )
-            with results_col2:
-                st.metric(
-                    label="*Predicted Sales Volume*",
-                    value=f"{int(sales_volume_prediction[0]):,}"
-                )
+            # Display primary results in a "box" container
+            with st.container():
+                st.markdown("### Prediction Results")
+                st.write("---")  # Optional: add a divider line
 
-            # Display the prediction probabilities with formatting
-            st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
-            st.markdown(f"Probability of being 'Amazon Choice': `{prob_yes:.2f}%`")
-            st.markdown(f"Probability of NOT being 'Amazon Choice'**: `{prob_no:.2f}%`")
+                results_col1, results_col2 = st.columns(2)
+                with results_col1:
+                    st.metric(
+                        label="*Amazon Choice Prediction*",
+                        value="Yes" if amazon_choice_prediction[0] == 1 else "No"
+                    )
+                with results_col2:
+                    st.metric(
+                        label="*Predicted Sales Volume*",
+                        value=f"{int(sales_volume_prediction[0]):,}"
+                    )
+
+                # Optional: add further details in the same container
+                st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
+                st.markdown(f"Probability of being 'Amazon Choice': `{prob_yes:.2f}%`")
+                st.markdown(f"Probability of NOT being 'Amazon Choice': `{prob_no:.2f}%`")
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
