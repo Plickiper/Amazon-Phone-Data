@@ -741,9 +741,9 @@ elif st.session_state.page_selection == "prediction":
 
             # Display the prediction probabilities with formatting
             st.markdown("#### Prediction Probabilities")
-            st.write(f"Prediction probabilities: {amazon_choice_prob}")
-            st.markdown(f"**Probability of being 'Amazon Choice'**: {prob_yes:.2f}%")
-            st.markdown(f"**Probability of NOT being 'Amazon Choice'**: {prob_no:.2f}%")
+            st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
+            st.markdown(f"**Probability of being 'Amazon Choice'**: `{prob_yes:.2f}%`")
+            st.markdown(f"**Probability of NOT being 'Amazon Choice'**: `{prob_no:.2f}%`")
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
