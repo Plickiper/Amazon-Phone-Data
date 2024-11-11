@@ -725,24 +725,20 @@ elif st.session_state.page_selection == "prediction":
             prob_no = amazon_choice_prob[0][0] * 100  # Probability for class 0 (No)
             prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
 
-            # Display the predictions in a unified box
-            with st.container():
-                st.write("### Prediction Results")
-                
-                # Place "Amazon Choice Prediction" and "Predicted Sales Volume" results in bold
-                st.markdown(f"**Amazon Choice Prediction**: {'Yes' if amazon_choice_prediction[0] == 1 else 'No'}")
-                st.markdown(f"**Predicted Sales Volume**: {int(sales_volume_prediction[0]):,}")
-                
-                # Show prediction probabilities in a structured format
-                st.write(f"Prediction probabilities: {amazon_choice_prob}")
-                st.markdown(f"**Probability of being 'Amazon Choice'**: {prob_yes:.2f}%")
-                st.markdown(f"**Probability of NOT being 'Amazon Choice'**: {prob_no:.2f}%")
+            # Display "Amazon Choice Prediction" and "Predicted Sales Volume" immediately below inputs
+            st.markdown("### Prediction Results")
+            st.markdown(f"**Amazon Choice Prediction**: {'Yes' if amazon_choice_prediction[0] == 1 else 'No'}")
+            st.markdown(f"**Predicted Sales Volume**: {int(sales_volume_prediction[0]):,}")
+
+            # Display the prediction probabilities after the primary results
+            st.write("#### Prediction Probabilities")
+            st.write(f"Prediction probabilities: {amazon_choice_prob}")
+            st.markdown(f"**Probability of being 'Amazon Choice'**: {prob_yes:.2f}%")
+            st.markdown(f"**Probability of NOT being 'Amazon Choice'**: {prob_no:.2f}%")
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
-            st.error("Please make sure all input values are valid.")
-
-
+            st.error("Please make sure all input values are valid.")      
 
 
 
