@@ -692,6 +692,7 @@ elif st.session_state.page_selection == "prediction":
     st.subheader("Enter Metrics")
 
     # Input form for prediction
+    amazon_choice_prob = None  # Initialize to ensure availability outside the form scope
     with st.form(key='prediction_form'):
         product_price = st.number_input("Product Price", min_value=0.0)
         product_star_rating = st.number_input("Product Star Rating", min_value=0.0, max_value=5.0)
@@ -714,8 +715,8 @@ elif st.session_state.page_selection == "prediction":
                 # Make predictions using the Logistic Regression model
                 amazon_choice_prob = st.session_state['log_reg_model'].predict_proba(input_normalized)
 
-                # Set a custom threshold (e.g., 0.4) for predicting "Amazon Choice"
-                threshold = 0.4
+                # Set a custom threshold (e.g., 0.5) for predicting "Amazon Choice"
+                threshold = 0.5
                 amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
 
                 # Predict sales volume using Random Forest Regressor
@@ -743,10 +744,11 @@ elif st.session_state.page_selection == "prediction":
                 st.error(f"An error occurred during prediction: {str(e)}")
                 st.error("Please make sure all input values are valid.")
 
-    # Display the prediction probabilities outside the form
-    st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
-    st.markdown(f"Probability of being 'Amazon Choice': `{prob_yes:.2f}%`")
-    st.markdown(f"Probability of NOT being 'Amazon Choice': `{prob_no:.2f}%`")
+    # Display the prediction probabilities outside the form only if available
+    if amazon_choice_prob is not None:
+        st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
+        st.markdown(f"Probability of being 'Amazon Choice': `{prob_yes:.2f}%`")
+        st.markdown(f"Probability of NOT being 'Amazon Choice': `{prob_no:.2f}%`")
 
 
 
