@@ -682,20 +682,19 @@ elif st.session_state.page_selection == "prediction":
     # Check if models exist in session state
     if 'log_reg_model' not in st.session_state or 'rfr_model' not in st.session_state:
         st.error("Please train the models in the Machine Learning section first!")
-        st.stop()  # Stop further execution if models are not found
+        st.stop()
 
-    # Check if scaler exists in session state
     if 'scaler' not in st.session_state:
         st.error("Scaler is not available. Please train the models first!")
-        st.stop()  # Stop further execution if scaler is not available
+        st.stop()
 
     st.subheader("Enter Product Metrics for Prediction")
 
     # Input form for prediction
     with st.form(key='prediction_form'):
-        product_price = st.number_input("Product Price", min_value=0.0)  # Input for Product Price
-        product_star_rating = st.number_input("Product Star Rating", min_value=0.0, max_value=5.0)  # Input for Star Rating
-        product_num_ratings = st.number_input("Number of Ratings", min_value=0)  # Input for Number of Ratings
+        product_price = st.number_input("Product Price", min_value=0.0)
+        product_star_rating = st.number_input("Product Star Rating", min_value=0.0, max_value=5.0)
+        product_num_ratings = st.number_input("Number of Ratings", min_value=0)
         submit_button = st.form_submit_button("Predict")
 
     if submit_button:
@@ -707,38 +706,39 @@ elif st.session_state.page_selection == "prediction":
                 'product_num_ratings': [product_num_ratings]
             })
 
-            # Normalize the input data using the scaler from session state
-            scaler = st.session_state['scaler']  # Retrieve scaler from session state
+            # Normalize the input data
+            scaler = st.session_state['scaler']
             input_normalized = scaler.transform(input_data)
 
-            # Make predictions using the Logistic Regression model
+            # Make predictions
             amazon_choice_prob = st.session_state['log_reg_model'].predict_proba(input_normalized)
-            
-            # Set a custom threshold for predicting "Amazon Choice"
             threshold = 0.4
             amazon_choice_prediction = (amazon_choice_prob[:, 1] > threshold).astype(int)
-
-            # Predict sales volume using Random Forest Regressor
             sales_volume_prediction = st.session_state['rfr_model'].predict(input_normalized)
 
             # Format probabilities
-            prob_no = amazon_choice_prob[0][0] * 100  # Probability for class 0 (No)
-            prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
+            prob_no = amazon_choice_prob[0][0] * 100
+            prob_yes = amazon_choice_prob[0][1] * 100
 
-            # Display "Amazon Choice Prediction" and "Predicted Sales Volume" immediately below inputs
+            # Display primary results in a single row using columns
             st.markdown("### Prediction Results")
-            st.markdown(f"**Amazon Choice Prediction**: {'Yes' if amazon_choice_prediction[0] == 1 else 'No'}")
-            st.markdown(f"**Predicted Sales Volume**: {int(sales_volume_prediction[0]):,}")
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**Amazon Choice Prediction**")
+                st.write("Yes" if amazon_choice_prediction[0] == 1 else "No")
+            with col2:
+                st.markdown("**Predicted Sales Volume**")
+                st.write(f"{int(sales_volume_prediction[0]):,}")
 
-            # Display the prediction probabilities after the primary results
-            st.write("#### Prediction Probabilities")
+            # Display the prediction probabilities
+            st.markdown("#### Prediction Probabilities")
             st.write(f"Prediction probabilities: {amazon_choice_prob}")
             st.markdown(f"**Probability of being 'Amazon Choice'**: {prob_yes:.2f}%")
             st.markdown(f"**Probability of NOT being 'Amazon Choice'**: {prob_no:.2f}%")
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
-            st.error("Please make sure all input values are valid.")      
+            st.error("Please make sure all input values are valid.")  
 
 
 
