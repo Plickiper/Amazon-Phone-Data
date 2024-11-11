@@ -556,7 +556,7 @@ elif st.session_state.page_selection == "machine_learning":
     In this case, the adjusted accuracy is shown as a percentage, which provides insight into the model’s real-world predictive power after threshold adjustments.
     """)
 
-
+    st.write("---")
     # Random Forest
     
     # Function to extract numeric values from text-based sales volume
