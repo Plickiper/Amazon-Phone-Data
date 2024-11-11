@@ -730,20 +730,19 @@ elif st.session_state.page_selection == "prediction":
             results_col1, results_col2 = st.columns(2)
             with results_col1:
                 st.metric(
-                    label="Amazon Choice Prediction",
+                    label="*Amazon Choice Prediction*",
                     value="Yes" if amazon_choice_prediction[0] == 1 else "No"
                 )
             with results_col2:
                 st.metric(
-                    label="Predicted Sales Volume",
+                    label="*Predicted Sales Volume*",
                     value=f"{int(sales_volume_prediction[0]):,}"
                 )
 
             # Display the prediction probabilities with formatting
-            st.markdown("#### Prediction Probabilities")
             st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
-            st.markdown(f"**Probability of being 'Amazon Choice'**: `{prob_yes:.2f}%`")
-            st.markdown(f"**Probability of NOT being 'Amazon Choice'**: `{prob_no:.2f}%`")
+            st.markdown(f"Probability of being 'Amazon Choice': `{prob_yes:.2f}%`")
+            st.markdown(f"Probability of NOT being 'Amazon Choice'**: `{prob_no:.2f}%`")
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {str(e)}")
