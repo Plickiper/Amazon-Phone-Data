@@ -727,7 +727,7 @@ elif st.session_state.page_selection == "prediction":
                 prob_yes = amazon_choice_prob[0][1] * 100  # Probability for class 1 (Yes)
 
                 # Display primary results within the same form under the Predict button
-                st.markdown("### Prediction Results")
+                st.markdown("### Results")
                 results_col1, results_col2 = st.columns(2)
                 with results_col1:
                     st.metric(
@@ -746,6 +746,7 @@ elif st.session_state.page_selection == "prediction":
 
     # Display the prediction probabilities outside the form only if available
     if amazon_choice_prob is not None:
+        st.markdown("### Probabilities")
         st.write(f"Prediction probabilities: `{amazon_choice_prob}`")
         st.markdown(f"Probability of being 'Amazon Choice': `{prob_yes:.2f}%`")
         st.markdown(f"Probability of NOT being 'Amazon Choice': `{prob_no:.2f}%`")
