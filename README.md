@@ -1,4 +1,4 @@
-# Amazon Phone Data Dashboard
+# PrimeClimb
 
 A Streamlit web application that performs **Exploratory Data Analysis (EDA)**, **Data Preprocessing**, and **Supervised Machine Learning** to predict "Amazon Choice" products and sales volume from the Phone Search Dataset using **Logistic Regression** and **Random Forest Regressor**.
 
